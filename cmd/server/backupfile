@@ -1,0 +1,104 @@
+package main
+
+import (
+	"encoding/json"
+	"log"
+	"net/http"
+	"strconv"
+	"strings"
+)
+
+type Task struct {
+	ID          int    `json:"id"`
+	Title       string `json:"title"`
+	Description string `json:"description"`
+	Status      string `json:"status"`
+}
+
+var tasks = []Task{
+	{
+		ID:          1,
+		Title:       "Learn Go",
+		Description: "Understand structs and APIs",
+		Status:      "pending",
+	},
+}
+
+func healthHandler(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte("OK"))
+}
+
+func getTasksHandler(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(tasks)
+}
+
+func createTaskHandler(w http.ResponseWriter, r *http.Request) {
+	var newTask Task
+
+	err := json.NewDecoder(r.Body).Decode(&newTask)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	newTask.ID = len(tasks) + 1
+
+	if newTask.Status == "" {
+		newTask.Status = "pending"
+	}
+
+	tasks = append(tasks, newTask)
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(newTask)
+}
+
+func deleteTaskHandler(w http.ResponseWriter, r *http.Request) {
+	idParam := strings.TrimPrefix(r.URL.Path, "/tasks/")
+
+	id, err := strconv.Atoi(idParam)
+	if err != nil {
+		http.Error(w, "Invalid ID", http.StatusBadRequest)
+		return
+	}
+
+	for index, task := range tasks {
+		if task.ID == id {
+			tasks = append(tasks[:index], tasks[index+1:]...)
+
+			w.WriteHeader(http.StatusOK)
+			w.Write([]byte("Task deleted"))
+			return
+		}
+	}
+
+	http.Error(w, "Task not found", http.StatusNotFound)
+}
+
+func tasksHandler(w http.ResponseWriter, r *http.Request) {
+	switch r.Method {
+	case http.MethodGet:
+		getTasksHandler(w, r)
+
+	case http.MethodPost:
+		createTaskHandler(w, r)
+
+	default:
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+	}
+}
+
+func main() {
+	http.HandleFunc("/health", healthHandler)
+	http.HandleFunc("/tasks", tasksHandler)
+	http.HandleFunc("/tasks/", deleteTaskHandler)
+
+	log.Println("Task API running on port 8080")
+
+	err := http.ListenAndServe(":8080", nil)
+	if err != nil {
+		log.Fatal(err)
+	}
+}
