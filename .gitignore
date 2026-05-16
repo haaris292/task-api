@@ -1,1 +1,21 @@
+# Environment files
 .env
+
+# Go binaries
+task-api
+server
+
+# Go build artifacts
+*.exe
+*.out
+*.test
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+
+# Logs
+*.log

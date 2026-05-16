@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: task-api
+
+spec:
+  replicas: 1
+
+  selector:
+    matchLabels:
+      app: task-api
+
+  template:
+    metadata:
+      labels:
+        app: task-api
+
+    spec:
+      containers:
+        - name: task-api
+
+          image: task-api:v1
+
+          imagePullPolicy: Never
+
+          ports:
+            - containerPort: 8080
+
+          env:
+            - name: DB_HOST
+              value: postgres
+
+            - name: DB_PORT
+              value: "5432"
+
+            - name: DB_USER
+              value: taskuser
+
+            - name: DB_PASSWORD
+              value: taskpassword
+
+            - name: DB_NAME
+              value: taskdb
