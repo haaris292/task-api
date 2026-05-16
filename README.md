@@ -707,3 +707,10 @@ Docker Network + Volume
 ```
 
 ===== 16 may progress above ============
+
+K8s troubleshooting commands
+
+1. kubectl get pods
+2. kubectl logs
+3. kubectl describe pod
+4. kubectl exec
