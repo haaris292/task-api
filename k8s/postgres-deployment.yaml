@@ -27,13 +27,22 @@ spec:
 
           env:
             - name: POSTGRES_USER
-              value: taskuser
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secret
+                  key: DB_USER
 
             - name: POSTGRES_PASSWORD
-              value: taskpassword
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secret
+                  key: DB_PASSWORD
 
             - name: POSTGRES_DB
-              value: taskdb
+              valueFrom:
+                configMapKeyRef:
+                  name: task-api-config
+                  key: DB_NAME
 
           volumeMounts:
             - mountPath: /var/lib/postgresql/data
