@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+
+metadata:
+  name: task-api-config
+
+data:
+  DB_HOST: {{ .Values.database.host }}
+  DB_PORT: "{{ .Values.database.port }}"
+  DB_NAME: {{ .Values.database.name }}

@@ -1,0 +1,23 @@
+app:
+  name: task-api
+  replicas: 1
+  port: 8080
+  nodePort: 30080
+
+image:
+  repository: haaris292/task-api
+  tag: latest
+  pullPolicy: Always
+
+database:
+  host: postgres
+  port: 5432
+  name: taskdb
+  user: taskuser
+  password: taskpassword
+
+postgres:
+  image: postgres:17
+
+storage:
+  size: 1Gi
