@@ -9,6 +9,8 @@ import (
 	"strings"
 
 	"task-api/internal/database"
+
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
 type Task struct {
@@ -160,6 +162,7 @@ func main() {
 	http.HandleFunc("/health", healthHandler)
 	http.HandleFunc("/tasks", tasksHandler)
 	http.HandleFunc("/tasks/", deleteTaskHandler)
+	http.Handle("/metrics", promhttp.Handler())
 
 	log.Println("Connected to PostgreSQL")
 	log.Println("Task API running on port 8080")
