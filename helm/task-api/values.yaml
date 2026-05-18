@@ -1,6 +1,6 @@
 app:
   name: task-api
-  replicas: 1
+  replicas: 3
   port: 8080
   nodePort: 30080
 
