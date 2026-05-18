@@ -929,3 +929,6 @@ kubectl port-forward svc/monitoring-kube-prometheus-prometheus 9090:9090
 
 If any changes made to help yaml files then run below to upgrade existing cluster
 helm upgrade task-api ./helm/task-api
+
+Run argocd
+kubectl port-forward svc/argocd-server -n argocd 8081:44343
