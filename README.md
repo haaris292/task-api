@@ -77,14 +77,17 @@ task-api/
 ## Prerequisites
 
 ### For Local Development
+
 - **Go 1.22+** - [Download](https://golang.org/dl/)
 - **PostgreSQL 17** - [Download](https://www.postgresql.org/download/) (or use Docker)
 
 ### For Docker
+
 - **Docker 20.10+** - [Download](https://docs.docker.com/get-docker/)
 - **Docker Compose 2.0+** - [Download](https://docs.docker.com/compose/install/)
 
 ### For Kubernetes
+
 - **kubectl** - [Download](https://kubernetes.io/docs/tasks/tools/)
 - **Kubernetes cluster** (1.20+) - Minikube, EKS, GKE, AKS, or any other K8s distribution
 
@@ -179,6 +182,7 @@ go run ./cmd/server/main.go
 ```
 
 Expected output:
+
 ```
 Successfully connected to PostgreSQL
 Connected to PostgreSQL
@@ -212,6 +216,7 @@ docker-compose up -d
 ```
 
 This command:
+
 - Builds the Docker image from Dockerfile
 - Starts PostgreSQL container
 - Starts the Task API container
@@ -273,6 +278,7 @@ GET /health
 ```
 
 **Response:**
+
 ```
 200 OK
 OK
@@ -287,6 +293,7 @@ GET /tasks
 ```
 
 **Response:**
+
 ```json
 [
   {
@@ -320,6 +327,7 @@ Content-Type: application/json
 ```
 
 **Response:**
+
 ```json
 {
   "id": 3,
@@ -330,6 +338,7 @@ Content-Type: application/json
 ```
 
 **Status Codes:**
+
 - `201 Created` - Task successfully created
 - `400 Bad Request` - Missing title or invalid JSON
 - `500 Internal Server Error` - Database error
@@ -343,12 +352,14 @@ DELETE /tasks/{id}
 ```
 
 **Response:**
+
 ```
 200 OK
 Task deleted
 ```
 
 **Status Codes:**
+
 - `200 OK` - Task successfully deleted
 - `400 Bad Request` - Invalid task ID
 - `404 Not Found` - Task not found
@@ -490,6 +501,7 @@ docker-compose up -d
 ### Kubernetes Manifests
 
 The `k8s/` directory contains:
+
 - `postgres-pvc.yaml` - PersistentVolumeClaim for database storage
 - `postgres-deployment.yaml` - PostgreSQL deployment
 - `postgres-service.yaml` - PostgreSQL service
@@ -800,17 +812,20 @@ http.HandleFunc("/tasks/update", updateTaskHandler)
 We welcome contributions! Please follow these steps:
 
 1. **Fork the repository**
+
    ```bash
    # Visit https://github.com/haaris292/task-api and click "Fork"
    ```
 
 2. **Clone your fork**
+
    ```bash
    git clone https://github.com/<your-username>/task-api.git
    cd task-api
    ```
 
 3. **Create a feature branch**
+
    ```bash
    git checkout -b feature/your-feature-name
    ```
@@ -821,12 +836,14 @@ We welcome contributions! Please follow these steps:
    - Update README if adding new features
 
 5. **Commit your changes**
+
    ```bash
    git add .
    git commit -m "feat: Add your feature description"
    ```
 
 6. **Push to your fork**
+
    ```bash
    git push origin feature/your-feature-name
    ```
@@ -855,6 +872,7 @@ This project is open source and available under the MIT License.
 ## Support
 
 For issues, questions, or suggestions:
+
 - Open an [Issue](https://github.com/haaris292/task-api/issues)
 - Create a [Discussion](https://github.com/haaris292/task-api/discussions)
 - Submit a [Pull Request](https://github.com/haaris292/task-api/pulls)
@@ -864,6 +882,7 @@ For issues, questions, or suggestions:
 ## Quick Reference Commands
 
 ### Local Development
+
 ```bash
 docker-compose up -d                    # Start all services
 docker-compose logs -f                  # View logs
@@ -872,6 +891,7 @@ go run ./cmd/server/main.go             # Run without Docker
 ```
 
 ### Docker
+
 ```bash
 docker build -t haaris292/task-api:v1 .
 docker run -d --name task-api -p 8080:8080 haaris292/task-api:v1
@@ -880,6 +900,7 @@ docker stop task-api && docker rm task-api
 ```
 
 ### Kubernetes
+
 ```bash
 kubectl apply -f k8s/                   # Deploy all
 kubectl get all                         # View resources
@@ -889,12 +910,22 @@ kubectl delete -f k8s/                  # Remove all
 ```
 
 ### API Testing
+
 ```bash
 curl http://localhost:8080/health                          # Health check
 curl http://localhost:8080/tasks                           # Get tasks
 curl -X POST http://localhost:8080/tasks \
   -H "Content-Type: application/json" \
   -d '{"title":"Test"}' \
-  
+
 curl -X DELETE http://localhost:8080/tasks/1               # Delete task
 ```
+
+Run grafana on local port 3000
+kubectl port-forward svc/monitoring-grafana 3000:80
+
+Run prometheus on local port 9090
+kubectl port-forward svc/monitoring-kube-prometheus-prometheus 9090:9090
+
+If any changes made to help yaml files then run below to upgrade existing cluster
+helm upgrade task-api ./helm/task-api

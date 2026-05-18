@@ -1,0 +1,28 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+
+metadata:
+  name: task-api
+
+  namespace: argocd
+
+spec:
+  project: default
+
+  source:
+    repoURL: https://github.com/haaris292/task-api.git
+    targetRevision: HEAD
+    path: helm/task-api
+
+    helm:
+      valueFiles:
+        - values.yaml
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: default
+
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
